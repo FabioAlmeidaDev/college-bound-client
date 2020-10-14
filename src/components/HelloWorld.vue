@@ -1,153 +1,193 @@
 <template>
   <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
+    <v-dialog v-model="dialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">
+          Confirm Athlete's sign up?
+        </v-card-title>
 
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
-        </h1>
+        <v-card-text>
+          Once you submit this form you will no longer be able to change your information. Would you like to continue with form submission?
+        </v-card-text>
 
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
+        <v-card-actions>
+          <v-spacer></v-spacer>
 
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
+          <v-btn color="gray darken-1" text @click="dialog = false">
+            Cancel
+          </v-btn>
 
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
+          <v-btn color="primary darken-1" @click="signup()">
+            Submit
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-row class="section">
+        <v-col cols="12" class="mb-4 main-container">
+          <h3 class="section-header">About you</h3>
+          <div class="image-preview-container">
+            <v-img :src="url" class="image-preview"></v-img>
+            <v-file-input v-model="photo" truncate-length="25" label="Gymnast's Photo" @change="Preview_image" @click:clear="resetPhoto()" required :rules="noEmpty"></v-file-input>
+          </div>
+          <v-text-field v-model="name" :rules="nameRules" label="Full Name (Gymnast's name)" required></v-text-field>
+          <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+          <v-select :items="graduatingYears" label="Graduating year" v-model="grad_year" required></v-select>
 
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
+          <v-text-field v-model="gpa" :rules="gpaRules" label="Current GPA" required></v-text-field>
 
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
+          <v-text-field v-model="youtube" :rules="urlRulesYT" label="Youtube Channel URL" required></v-text-field>
 
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
+          <v-text-field v-model="instagram" :rules="urlRulesINSTA" label="Instagram URL" required></v-text-field>
+        </v-col>
+      </v-row>
 
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
-      </v-col>
-    </v-row>
+      <v-row class="section">
+        <v-col cols="12" class="mb-4 main-container">
+          <h3 class="section-header">About your gymnastics</h3>
+          <h4 class="section-sub-header">
+            Describe the skills you are currently competing and the skills you are working on
+          </h4>
+          <br />
+
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Vault (VT) - Currently Competing" v-model="vt_current" no-resize rows="4" required></v-textarea>
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Vault (VT) - Working on" v-model="vt_working" no-resize rows="4" required></v-textarea>
+
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Uneven Bars (UB) - Currently Competing" v-model="ub_current" no-resize rows="4" required></v-textarea>
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Uneven Bars (UB) - Working on" v-model="ub_working" no-resize rows="4" required></v-textarea>
+
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Balance Beam (BB) - Currently Competing" v-model="bb_current" no-resize rows="4" required></v-textarea>
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Balance Beam (BB) - Working on" v-model="bb_working" no-resize rows="4" required></v-textarea>
+
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Floor Exercise (Fx) - Currently Competing" v-model="fx_current" no-resize rows="4" required></v-textarea>
+          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Floor Exercise (Fx) - Working on" v-model="fx_working" no-resize rows="4" required></v-textarea>
+        </v-col>
+      </v-row>
+
+      <v-row class="section">
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
+          Sign up
+        </v-btn>
+      </v-row>
+    </v-form>
   </v-container>
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import Vue from "vue";
+  //@ts-ignore
+  import api from "@/api/covid-server-api";
 
   export default Vue.extend({
-    name: 'HelloWorld',
+    name: "HelloWorld",
 
     data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
+      dialog: false,
+      url: "/fem-placeholder.png",
+      photo: null,
+      valid: true,
+      name: "",
+      gpa: "",
+      email: "",
+      grad_year: "",
+      youtube: "",
+      instagram: "",
+      vt_current: "",
+      vt_working: "",
+      ub_current: "",
+      ub_working: "",
+      bb_current: "",
+      bb_working: "",
+      fx_current: "",
+      fx_working: "",
+
+      nameRules: [(v: any) => !!v || "Name is required", (v: any) => (v && v.length <= 200) || "Name must be less than 200 characters"],
+      emailRules: [(v: any) => !!v || "E-mail is required", (v: any) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
+      noEmpty: [(v: any) => !!v || "Required"],
+      gpaRules: [(v: any) => !!v || "Current GPA is required", (v: any) => /[0-9]{1}\.[0-9]{1}/.test(v) || "GPA must be in the format 4.0"],
+      urlRulesYT: [(v: any) => /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(v) || "https://www.youtube.com/channel/YourChannelUniqueId"],
+      urlRulesINSTA: [(v: any) => /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(v) || "https://www.instagram.com/YourInstagramName/"],
     }),
-  })
+    methods: {
+      validate() {
+        // @ts-ignore
+        this.valid = this.$refs.form.validate();
+        if (this.valid) {
+          this.dialog = true;
+        }
+      },
+      Preview_image() {
+        if (this.photo) {
+          this.url = URL.createObjectURL(this.photo);
+        }
+      },
+      resetPhoto() {
+        this.url = "/fem-placeholder.png";
+      },
+      async signup() {
+        const response = await api.post("/add_athlete", {
+          photo: this.photo,
+          name: this.name,
+          email: this.email,
+          gpa: this.gpa,
+          grad_year: this.grad_year,
+          youtube: this.youtube,
+          instagram: this.instagram,
+          vt_current: this.vt_current,
+          vt_working: this.vt_working,
+          ub_current: this.ub_current,
+          ub_working: this.ub_working,
+          bb_current: this.bb_current,
+          bb_working: this.bb_working,
+          fx_current: this.fx_current,
+          fx_working: this.fx_working,
+        });
+        this.dialog = false;
+        return response.data;
+      },
+    },
+    computed: {
+      graduatingYears() {
+        const years = [];
+        const num_of_years = 20;
+        const first_year = 2020;
+        for (let i = first_year; i <= first_year + num_of_years; i++) {
+          years.push(i);
+        }
+        return years;
+      },
+    },
+  });
 </script>
+
+<style lang="scss">
+  .section {
+  }
+  .section-header {
+    color: #78aa01;
+    text-align: left;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #78aa01;
+    margin-bottom: 2rem;
+  }
+  .section-sub-header {
+    color: #666;
+  }
+  .main-container {
+    padding: 2rem !important;
+  }
+  .image-preview-container {
+    width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 2px 2px 5px #ccc;
+    margin-bottom: 1.5rem;
+  }
+  .image-preview {
+    height: 250px;
+  }
+</style>
