@@ -66,8 +66,8 @@
       </v-row>
 
       <v-row class="section">
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
-          Sign up
+        <v-btn :disabled="!valid" color="success" class="mr-4 register-btn" @click="validate" x-large>
+          Register
         </v-btn>
       </v-row>
     </v-form>
@@ -234,6 +234,11 @@
 </script>
 
 <style lang="scss">
+  .register-btn {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
   .section {
   }
   .section-header {
