@@ -2,16 +2,9 @@
   <v-app>
     <v-app-bar app color="rgb(120, 170, 1)" dark>
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+        <v-img alt="Vuetify Logo" class="shrink mr-2" contain src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png" transition="scale-transition" width="40" />
 
-        <h2>APEX Athletics - College Showcase 2020</h2>
+        <h2 class="main-title">APEX Athletics - College Showcase 2020</h2>
       </div>
 
       <v-spacer></v-spacer>
@@ -33,18 +26,25 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+  import Vue from "vue";
+  import HelloWorld from "./components/HelloWorld.vue";
 
-export default Vue.extend({
-  name: "App",
+  export default Vue.extend({
+    name: "App",
 
-  components: {
-    HelloWorld,
-  },
+    components: {
+      HelloWorld,
+    },
 
-  data: () => ({
-    //
-  }),
-});
+    data: () => ({
+      //
+    }),
+  });
 </script>
+<style lang="scss">
+  @media screen and (max-width: 527px) {
+    .main-title {
+      font-size: 1rem;
+    }
+  }
+</style>
