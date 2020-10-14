@@ -71,11 +71,21 @@
         </v-btn>
       </v-row>
     </v-form>
+    <v-snackbar v-model="snackbar" :multiline="true" :timeout="this.snackbar_timeout">
+      {{ this.snackbar_text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
 <script lang="ts">
   import Vue from "vue";
+  import axios from "axios";
   //@ts-ignore
   import api from "@/api/covid-server-api";
 
@@ -83,8 +93,12 @@
     name: "HelloWorld",
 
     data: () => ({
+      snackbar: false,
+      snackbar_text: "",
+      snackbar_timeout: 5000,
       dialog: false,
       url: "/fem-placeholder.png",
+      base64: "",
       photo: null,
       valid: true,
       name: "",
@@ -120,31 +134,89 @@
       Preview_image() {
         if (this.photo) {
           this.url = URL.createObjectURL(this.photo);
+          this.tobase64(this.photo);
         }
       },
       resetPhoto() {
         this.url = "/fem-placeholder.png";
       },
+      async tobase64(img: Blob | null) {
+        if (img) {
+          let base64data: string | ArrayBuffer | null = "";
+          const reader = new FileReader();
+          await reader.readAsDataURL(img);
+          reader.onloadend = () => {
+            base64data = reader.result;
+            this.base64 = base64data ? base64data.toString() : "";
+            return base64data ? base64data.toString() : "";
+          };
+        }
+        return img;
+      },
+
       async signup() {
-        const response = await api.post("/add_athlete", {
-          photo: this.photo,
-          name: this.name,
-          email: this.email,
-          gpa: this.gpa,
-          grad_year: this.grad_year,
-          youtube: this.youtube,
-          instagram: this.instagram,
-          vt_current: this.vt_current,
-          vt_working: this.vt_working,
-          ub_current: this.ub_current,
-          ub_working: this.ub_working,
-          bb_current: this.bb_current,
-          bb_working: this.bb_working,
-          fx_current: this.fx_current,
-          fx_working: this.fx_working,
-        });
+        const response = await api
+          .post("/add_athlete", {
+            // @ts-ignore
+            photo: this.photo ? this.photo.name : "no_image",
+            name: this.name,
+            email: this.email,
+            gpa: this.gpa,
+            grad_year: this.grad_year,
+            youtube: this.youtube,
+            instagram: this.instagram,
+            vt_current: this.vt_current,
+            vt_working: this.vt_working,
+            ub_current: this.ub_current,
+            ub_working: this.ub_working,
+            bb_current: this.bb_current,
+            bb_working: this.bb_working,
+            fx_current: this.fx_current,
+            fx_working: this.fx_working,
+          })
+          .then(() => {
+            if (this.photo) {
+              const bodyFormData = new FormData();
+              //@ts-ignore
+              bodyFormData.append("photo", this.photo);
+              const uploadPhoto = axios({
+                method: "post",
+                // baseURL: "http://localhost:3001",
+                baseURL: "https://apexcollegeshowcase-server.herokuapp.com",
+                url: "/post_file",
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+                .then((response) => {
+                  //handle success
+                  this.dialog = false;
+                  this.snackbar_timeout = 5000;
+                  this.snackbar_text = "Thank you! You have successfuly registered for the Apex College Showcase 2020";
+                  this.snackbar = true;
+                  //@ts-ignore
+                  this.$refs.form.reset();
+                  this.resetPhoto();
+                  return { success: true };
+                })
+                .catch((response) => {
+                  //handle error
+                  this.snackbar_timeout = 7000;
+                  this.snackbar_text = "Something went wrong while uploading your photo! We could not register you at this time, please try again later or try a different photo";
+                  this.snackbar = true;
+                  this.dialog = false;
+                  return { success: false };
+                });
+            }
+          })
+          .catch(() => {
+            this.snackbar_timeout = 7000;
+            this.snackbar_text = "Something went wrong! We could not register you at this time, please try again later";
+            this.snackbar = true;
+            this.dialog = false;
+            return { success: false };
+          });
         this.dialog = false;
-        return response.data;
+        return { success: "not_sure" };
       },
     },
     computed: {
