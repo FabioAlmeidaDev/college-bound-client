@@ -32,6 +32,7 @@
             <v-file-input v-model="photo" truncate-length="25" label="Gymnast's Photo" @change="Preview_image" @click:clear="resetPhoto()" required :rules="noEmpty"></v-file-input>
           </div>
           <v-text-field v-model="name" :rules="nameRules" label="Full Name (Gymnast's name)" required></v-text-field>
+          <v-text-field v-model="clubname" :rules="noEmpty" label="Club/Gym name" required></v-text-field>
           <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
           <v-select :items="graduatingYears" label="Graduating year" v-model="grad_year" required></v-select>
 
@@ -102,6 +103,7 @@
       photo: null,
       valid: true,
       name: "",
+      clubname: "",
       gpa: "",
       email: "",
       grad_year: "",
@@ -160,6 +162,7 @@
             // @ts-ignore
             photo: this.photo ? this.photo.name : "no_image",
             name: this.name,
+            clubname: this.clubname,
             email: this.email,
             gpa: this.gpa,
             grad_year: this.grad_year,
