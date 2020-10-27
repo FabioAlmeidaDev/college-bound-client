@@ -38,9 +38,9 @@
 
           <v-text-field v-model="gpa" :rules="gpaRules" label="Current GPA" required></v-text-field>
 
-          <v-text-field v-model="youtube" :rules="urlRulesYT" label="Youtube Channel URL" required></v-text-field>
+          <v-text-field v-model="youtube" label="Youtube Channel URL"></v-text-field>
 
-          <v-text-field v-model="instagram" :rules="urlRulesINSTA" label="Instagram URL" required></v-text-field>
+          <v-text-field v-model="instagram" label="Instagram URL"></v-text-field>
         </v-col>
       </v-row>
 
@@ -52,17 +52,17 @@
           </h4>
           <br />
 
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Vault (VT) - Currently Competing" v-model="vt_current" no-resize rows="4" required></v-textarea>
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Vault (VT) - Working on" v-model="vt_working" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Vault (VT) - Currently Competing" v-model="vt_current" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Vault (VT) - Working on" v-model="vt_working" no-resize rows="4" required></v-textarea>
 
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Uneven Bars (UB) - Currently Competing" v-model="ub_current" no-resize rows="4" required></v-textarea>
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Uneven Bars (UB) - Working on" v-model="ub_working" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Uneven Bars (UB) - Currently Competing" v-model="ub_current" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Uneven Bars (UB) - Working on" v-model="ub_working" no-resize rows="4" required></v-textarea>
 
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Balance Beam (BB) - Currently Competing" v-model="bb_current" no-resize rows="4" required></v-textarea>
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Balance Beam (BB) - Working on" v-model="bb_working" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Balance Beam (BB) - Currently Competing" v-model="bb_current" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Balance Beam (BB) - Working on" v-model="bb_working" no-resize rows="4" required></v-textarea>
 
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Floor Exercise (Fx) - Currently Competing" v-model="fx_current" no-resize rows="4" required></v-textarea>
-          <v-textarea clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Floor Exercise (Fx) - Working on" v-model="fx_working" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Floor Exercise (Fx) - Currently Competing" v-model="fx_current" no-resize rows="4" required></v-textarea>
+          <v-textarea class="text-area-skill" clearable :rules="noEmpty" clear-icon="mdi-close-circle" label="Floor Exercise (Fx) - Working on" v-model="fx_working" no-resize rows="4" required></v-textarea>
         </v-col>
       </v-row>
 
@@ -237,6 +237,11 @@
 </script>
 
 <style lang="scss">
+  .text-area-skill {
+    textarea {
+      padding-top: 0.5rem;
+    }
+  }
   .register-btn {
     width: 90%;
     margin-left: auto;
