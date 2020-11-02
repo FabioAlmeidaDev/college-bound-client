@@ -20,7 +20,7 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld />
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
@@ -33,7 +33,6 @@
     name: "App",
 
     components: {
-      HelloWorld,
     },
 
     data: () => ({
