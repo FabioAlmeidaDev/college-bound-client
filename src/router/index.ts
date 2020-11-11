@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import HelloWorld from "@/components/HelloWorld.vue";
 import List from "@/views/List.vue";
 import Edit from "@/views/Edit.vue";
 import Register from "@/views/Register.vue";

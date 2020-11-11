@@ -22,7 +22,7 @@
               <td>{{row.item.athlete_number}}</td>
               <td>{{row.item.name}}</td>
               <td>{{row.item.clubname}}</td>
-              <td>{{row.item.grad_year}}</td>
+              <td class="d-none">{{row.item.grad_year}}</td>
               <td>
                   <v-btn dark x-small color="blue" @click="goto(row.item._id)" left outlined>
                       <v-icon dark small >mdi-pencil</v-icon>
@@ -62,8 +62,8 @@ export default {
           },
           {
             text: 'Grad',
-            align: 'start',
             value: 'grad_year',
+             align: ' d-none'
           },
           {
             text: 'Action',

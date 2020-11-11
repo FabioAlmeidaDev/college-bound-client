@@ -41,13 +41,18 @@
             Cancel
           </v-btn>
 
-          <v-btn color="pink darken-1" dark @click="deleteAthlete()">
+          <v-btn color="pink darken-1 " dark @click="deleteAthlete()">
             Delete
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-
+    <v-row> 
+      <v-chip class="ml-5" outlined color="blue" @click="()=> this.$router.go('-1')"> 
+        <v-icon left>mdi-arrow-left</v-icon>
+        Back
+      </v-chip>
+    </v-row>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-row class="section">
         <v-col cols="12" class="mb-4 main-container">
@@ -93,7 +98,7 @@
       </v-row>
 
       <v-row class="section" justify="center">
-        <v-btn color="red" outlined  @click="validate_delete" x-large class="mr-5" >
+        <v-btn color="red" outlined  @click="validate_delete" x-large class="mr-5 mb-5" >
           Delete this Athlete
         </v-btn>
         <v-btn :disabled="!valid" color="success" class="" @click="validate" x-large>
@@ -115,7 +120,6 @@
 
 <script lang="ts">
   import Vue from "vue";
-  import axios from "axios";
   //@ts-ignore
   import api from "@/api/covid-server-api";
 
@@ -232,7 +236,7 @@
     
       async deleteAthlete() {
         const response = await api
-          .post("/delete_athlete", {id: this.id}).then( (res) => {
+          .post("/delete_athlete", {id: this.id}).then( (res: any) => {
             this.$router.push("/list");
           }).catch(() => {
             this.$router.push("/list");
@@ -253,7 +257,7 @@
     async mounted(){
         const { id } = this.$route.params;
         const response = await api
-          .post("/athletes/find", {id}).then((res:any) => {
+          .post("/athletes/find", {id}).then((res: any) => {
             this.id = res.data._id;
             this.url= "https://apexcollegeshowcase-server.herokuapp.com/get_file/"+res.data.photo;
             this.athlete_number= res.data.athlete_number;
