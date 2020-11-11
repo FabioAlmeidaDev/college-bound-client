@@ -287,6 +287,9 @@
     font-size:2rem;
     text-align: center;
   }
+  .v-text-field__slot{
+    height: 2.5rem !important;
+  }
 }
   .text-area-skill {
     textarea {
