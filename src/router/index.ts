@@ -2,19 +2,27 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import HelloWorld from "@/components/HelloWorld.vue";
 import List from "@/views/List.vue";
+import Edit from "@/views/Edit.vue";
+import Register from "@/views/Register.vue";
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
-    component: HelloWorld
+    name: 'Register',
+    component: Register
   },
   {
     path: '/list',
     name: 'List',
     component: List
+  },
+  {
+    path: '/edit/:id',
+    name: 'Edit',
+    component: Edit,
+    props: true
   },
   {
     path: '/about',

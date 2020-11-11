@@ -91,7 +91,7 @@
   import api from "@/api/covid-server-api";
 
   export default Vue.extend({
-    name: "HelloWorld",
+    name: "Register",
 
     data: () => ({
       snackbar: false,
