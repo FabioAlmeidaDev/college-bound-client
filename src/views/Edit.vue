@@ -284,7 +284,7 @@
 <style lang="scss">
 .athlete-number{
   input{
-    font-size:2rem;
+    font-size:1.8rem;
     text-align: center;
         padding: 0px;
     line-height: 2.5rem;
