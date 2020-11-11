@@ -286,6 +286,8 @@
   input{
     font-size:2rem;
     text-align: center;
+        padding: 0px;
+    line-height: 2.5rem;
   }
   .v-text-field__slot{
     height: 2.5rem !important;
