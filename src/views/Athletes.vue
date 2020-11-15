@@ -62,11 +62,21 @@ export default {
   },
   computed: {
     filteredAthletes() {
+      function sortByProperty(property){  
+        return function(a,b){  
+            if(a[property] > b[property])  
+              return 1;  
+            else if(a[property] < b[property])  
+              return -1;  
+        
+            return 0;  
+        }  
+      }
       const search = this.searchAthletes.toLowerCase().trim();
 
-    if (!search) return this.athletes;
+    // if (!search) return this.athletes.sort(sortByProperty("clubname"));
 
-    return this.athletes.filter(c => (c.name.toLowerCase().indexOf(search) > -1 || c.clubname.toLowerCase().indexOf(search) > -1 || c.grad_year.toString().toLowerCase().indexOf(search) > -1) );
+    return this.athletes.filter(c => (c.name.toLowerCase().indexOf(search) > -1 || c.clubname.toLowerCase().indexOf(search) > -1 || c.grad_year.toString().toLowerCase().indexOf(search) > -1) ).sort(sortByProperty("clubname"));
     },
   },
   methods:{
@@ -87,7 +97,7 @@ export default {
     }
     },
     created(){
-      console.log("TEST", this.getList())
+      this.getList();
     },
 }
 </script>
