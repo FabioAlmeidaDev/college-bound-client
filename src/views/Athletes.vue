@@ -1,12 +1,19 @@
 <template>
   <v-container>
     <h2>Athletes</h2>
+    <v-text-field label="Search by athlete's name, Gym name or Grad year" v-model="searchAthletes"></v-text-field>
     <div>
       <v-row class="text-center">
-        <v-col sm="12" md="4" v-for="(item, index) in athletes" :key="index">
-          <v-card>
-            <v-card-title>{{item.name}}</v-card-title>
-            <v-img :src="`https://apexcollegeshowcase-server.herokuapp.com/headshot/${item.photo}`"/>
+        <v-col sm="12" md="4" v-for="(item, index) in filteredAthletes" :key="index">
+          <v-card class="pa-5">
+            <div class="athlete-number">{{item.athlete_number}}</div>
+            <div class="athlete-title">{{item.name}}</div>
+            <div class="">{{item.clubname}}</div>
+            <div class="class-of">class of <strong>{{item.grad_year}}</strong></div>
+            <v-img :src="`https://apexcollegeshowcase-server.herokuapp.com/headshot/${item.photo}`" class="athlete-img"/>
+            <v-card-actions class="pa-2 pt-5 justify-center" >
+                <v-btn text color="primary" @click="() => goto(item._id)">Click to view Details</v-btn>
+            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -23,6 +30,7 @@ export default {
   data: ()=>({
     search:'',
     athletes:[],
+    searchAthletes:"",
     headers:[
           {
             text: '#',
@@ -51,8 +59,16 @@ export default {
         ],
   }),
   components: {
-  }
-  ,
+  },
+  computed: {
+    filteredAthletes() {
+      const search = this.searchAthletes.toLowerCase().trim();
+
+    if (!search) return this.athletes;
+
+    return this.athletes.filter(c => (c.name.toLowerCase().indexOf(search) > -1 || c.clubname.toLowerCase().indexOf(search) > -1 || c.grad_year.toString().toLowerCase().indexOf(search) > -1) );
+    },
+  },
   methods:{
     async getList(){
         await api
@@ -67,7 +83,7 @@ export default {
 
       },
       goto(id){
-      this.$router.push(`edit/${id}`);
+      this.$router.push(`athletes/${id}`);
     }
     },
     created(){
@@ -75,3 +91,30 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.class-of {
+    color:#AAA;
+    padding-left:0.5rem;
+    font-size: 0.9rem;
+}
+.athlete-img {
+    border-radius:7px;
+    margin-top:0.5rem;
+}
+.athlete-title{
+    font-size:1.4rem;
+    font-weight:bold;
+    margin-top:0.5rem;
+}
+.athlete-number {
+    position:absolute;
+    right:0rem;
+    top:0rem;
+    color:white;
+    font-weight:bold;
+    background-color: #333;
+    padding:1px 6px;
+    border-radius:4px;
+}
+</style>
