@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+import Athletes from "@/views/Athletes.vue";
 import List from "@/views/List.vue";
 import Edit from "@/views/Edit.vue";
 import Register from "@/views/Register.vue";
@@ -13,9 +14,9 @@ const routes: Array<RouteConfig> = [
     component: Register
   },
   {
-    path: '/list',
-    name: 'List',
-    component: List
+    path: '/athletes',
+    name: 'Athletes',
+    component: Athletes
   },
   {
     path: '/edit/:id',
