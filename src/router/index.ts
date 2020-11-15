@@ -25,7 +25,7 @@ const routes: Array<RouteConfig> = [
     component: Athletes
   },
   {
-    path: '/athletes/:id',
+    path: '/athletes/:athletename/:id',
     name: 'AthleteDetails',
     component: AthleteDetails
   },
