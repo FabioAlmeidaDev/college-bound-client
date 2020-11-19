@@ -12,7 +12,7 @@
             <div class="class-of">class of <strong>{{item.grad_year}}</strong></div>
             <v-img :src="`https://apexcollegeshowcase-server.herokuapp.com/headshot/${item.photo}`" class="athlete-img"/>
             <v-card-actions class="pa-2 pt-5 justify-center" >
-                <v-btn text color="primary" @click="() => goto(item.name,item._id)">Click to view Details</v-btn>
+                <v-btn text color="primary" @click="() => goto(item.name,item._id)" :person="item.name">Click to view Details</v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
