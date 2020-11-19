@@ -12,28 +12,43 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Register',
-    component: Register
+    component: Register,
+    meta: {
+      title: 'Register'
+    },
   },
   {
     path: '/list',
     name: 'List',
-    component: List
+    component: List,
+    meta: {
+      title: 'List'
+    },
   },
   {
     path: '/athletes',
     name: 'Athletes',
-    component: Athletes
+    component: Athletes,
+    meta: {
+      title: 'Athletes'
+    },
   },
   {
     path: '/athletes/:athletename/:id',
     name: 'AthleteDetails',
-    component: AthleteDetails
+    component: AthleteDetails,
+    meta: {
+      title: 'Athlete Details'
+    },
   },
   {
     path: '/edit/:id',
     name: 'Edit',
     component: Edit,
-    props: true
+    props: true,
+    meta: {
+      title: 'Edit'
+    },
   },
   {
     path: '/about',
@@ -41,7 +56,10 @@ const routes: Array<RouteConfig> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    meta: {
+      title: 'About'
+    },
   }
 ]
 
@@ -50,5 +68,15 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const athleteName = to.params.athletename;
+  if(athleteName){
+    document.title = `${to.meta.title} | ${athleteName}`;
+  }else{
+    document.title = to.meta.title ? to.meta.title : "Apex Showcase 2020";
+  }
+  next();
+});
 
 export default router
