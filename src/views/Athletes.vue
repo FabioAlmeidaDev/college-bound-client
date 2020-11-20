@@ -12,7 +12,7 @@
             <div class="class-of">class of <strong>{{item.grad_year}}</strong></div>
             <v-img :src="`https://apexcollegeshowcase-server.herokuapp.com/headshot/${item.photo}`" class="athlete-img"/>
             <v-card-actions class="pa-2 pt-5 justify-center" >
-                <v-btn class="view-more" text color="primary" @click="() => goto(item.name,item._id)" :person="item.name">Click to view Details</v-btn>
+                <v-btn class="view-more" text color="primary" @click="() => goto(item.name,item._id)" :person="item.name"><div>Read more about</div><div class="athlete-name-in-button">{{item.name}}</div></v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -126,5 +126,12 @@ export default {
     background-color: #333;
     padding:1px 6px;
     border-radius:4px;
+}
+.athlete-name-in-button {
+    color: black;
+    display: block;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-left: 0.5rem;
 }
 </style>
