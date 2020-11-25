@@ -88,7 +88,7 @@
   import Vue from "vue";
   import axios from "axios";
   //@ts-ignore
-  import api from "@/api/covid-server-api";
+  import api from "@/api/server-api";
 
   export default Vue.extend({
     name: "Register",

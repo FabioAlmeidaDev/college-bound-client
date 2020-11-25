@@ -23,7 +23,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
+
     <v-dialog v-model="dialog_delete" max-width="290">
       <v-card>
         <v-card-title class="headline">
@@ -47,8 +47,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-row> 
-      <v-chip class="ml-5" outlined color="blue" @click="()=> this.$router.go('-1')"> 
+    <v-row>
+      <v-chip class="ml-5" outlined color="blue" @click="() => this.$router.go('-1')">
         <v-icon left>mdi-arrow-left</v-icon>
         Back
       </v-chip>
@@ -58,7 +58,7 @@
         <v-col cols="12" class="mb-4 main-container">
           <h3 class="section-header">Edit Athlete</h3>
           <div class="image-preview-container">
-            <v-text-field v-model="athlete_number" class="athlete-number" label="Athlete Number" clearable/>
+            <v-text-field v-model="athlete_number" class="athlete-number" label="Athlete Number" clearable />
             <v-img :src="url" class="image-preview"></v-img>
             <!-- <v-file-input v-model="photo" truncate-length="25" label="Gymnast's Photo" @change="Preview_image" @click:clear="resetPhoto()" required :rules="noEmpty"></v-file-input> -->
           </div>
@@ -98,7 +98,7 @@
       </v-row>
 
       <v-row class="section" justify="center">
-        <v-btn color="red" outlined  @click="validate_delete" x-large class="mr-5 mb-5" >
+        <v-btn color="red" outlined @click="validate_delete" x-large class="mr-5 mb-5">
           Delete this Athlete
         </v-btn>
         <v-btn :disabled="!valid" color="success" class="" @click="validate" x-large>
@@ -121,7 +121,7 @@
 <script lang="ts">
   import Vue from "vue";
   //@ts-ignore
-  import api from "@/api/covid-server-api";
+  import api from "@/api/server-api";
 
   export default Vue.extend({
     name: "Register",
@@ -171,7 +171,7 @@
       },
       validate_delete() {
         // @ts-ignore
-          this.dialog_delete = true;
+        this.dialog_delete = true;
       },
       Preview_image() {
         if (this.photo) {
@@ -233,15 +233,17 @@
         this.$router.push("/list");
         return { success: "not_sure" };
       },
-    
+
       async deleteAthlete() {
         const response = await api
-          .post("/delete_athlete", {id: this.id}).then( (res: any) => {
-            this.$router.push("/list");
-          }).catch(() => {
+          .post("/delete_athlete", { id: this.id })
+          .then((res: any) => {
             this.$router.push("/list");
           })
-      }
+          .catch(() => {
+            this.$router.push("/list");
+          });
+      },
     },
     computed: {
       graduatingYears() {
@@ -254,45 +256,44 @@
         return years;
       },
     },
-    async mounted(){
-        const { id } = this.$route.params;
-        const response = await api
-          .post("/athletes/find", {id}).then((res: any) => {
-            this.id = res.data._id;
-            this.url= "https://apexcollegeshowcase-server.herokuapp.com/get_file/"+res.data.photo;
-            this.athlete_number= res.data.athlete_number;
-            this.name= res.data.name;
-            this.clubname= res.data.clubname;
-            this.email= res.data.email;
-            this.gpa= res.data.gpa.toFixed(1);
-            this.grad_year= res.data.grad_year;
-            this.youtube= res.data.youtube;
-            this.instagram= res.data.instagram;
-            this.vt_current= res.data.vt_current;
-            this.vt_working= res.data.vt_working;
-            this.ub_current= res.data.ub_current;
-            this.ub_working= res.data.ub_working;
-            this.bb_current= res.data.bb_current;
-            this.bb_working= res.data.bb_working;
-            this.fx_current= res.data.fx_current;
-            this.fx_working= res.data.fx_working;
-          });
-    }
+    async mounted() {
+      const { id } = this.$route.params;
+      const response = await api.post("/athletes/find", { id }).then((res: any) => {
+        this.id = res.data._id;
+        this.url = "https://apexcollegeshowcase-server.herokuapp.com/get_file/" + res.data.photo;
+        this.athlete_number = res.data.athlete_number;
+        this.name = res.data.name;
+        this.clubname = res.data.clubname;
+        this.email = res.data.email;
+        this.gpa = res.data.gpa.toFixed(1);
+        this.grad_year = res.data.grad_year;
+        this.youtube = res.data.youtube;
+        this.instagram = res.data.instagram;
+        this.vt_current = res.data.vt_current;
+        this.vt_working = res.data.vt_working;
+        this.ub_current = res.data.ub_current;
+        this.ub_working = res.data.ub_working;
+        this.bb_current = res.data.bb_current;
+        this.bb_working = res.data.bb_working;
+        this.fx_current = res.data.fx_current;
+        this.fx_working = res.data.fx_working;
+      });
+    },
   });
 </script>
 
 <style lang="scss">
-.athlete-number{
-  input{
-    font-size:1.8rem;
-    text-align: center;
-        padding: 0px;
-    line-height: 2.5rem;
+  .athlete-number {
+    input {
+      font-size: 1.8rem;
+      text-align: center;
+      padding: 0px;
+      line-height: 2.5rem;
+    }
+    .v-text-field__slot {
+      height: 2.5rem !important;
+    }
   }
-  .v-text-field__slot{
-    height: 2.5rem !important;
-  }
-}
   .text-area-skill {
     textarea {
       padding-top: 0.5rem;

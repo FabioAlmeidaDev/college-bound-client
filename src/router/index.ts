@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Athletes from "@/views/Athletes.vue";
 import AthleteDetails from "@/views/AthleteDetails.vue";
-import List from "@/views/List.vue";
+import Login from "@/views/Login.vue";
 import Edit from "@/views/Edit.vue";
 import Register from "@/views/Register.vue";
 
@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
+    path: '/signup',
     name: 'Register',
     component: Register,
     meta: {
@@ -18,11 +18,11 @@ const routes: Array<RouteConfig> = [
     },
   },
   {
-    path: '/list',
-    name: 'List',
-    component: List,
+    path: '/login',
+    name: 'Login',
+    component: Login,
     meta: {
-      title: 'List'
+      title: 'Login'
     },
   },
   {
