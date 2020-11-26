@@ -12,6 +12,11 @@ export default new Vuex.Store({
             email: "",
             password: "",
             token: "",
+        },
+        login: {
+            error: false,
+            status: false,
+            message: ""
         }
     },
     mutations: {
@@ -23,18 +28,30 @@ export default new Vuex.Store({
         },
         setToken(state, payload) {
             state.user.token = payload;
+        },
+        setLogin(state, payload) {
+            const {status, message, error} = payload;
+            state.login.status = status;
+            state.login.message = message;
+            state.login.error = error;
+
         }
     },
     actions: {
         async signin(state, route = ""){
+            this.commit("setLogin",{status: false, error: false, message: ""})
             await axios.post("http://localhost:3001/signin",{email:this.state.user.email, password:this.state.user.password })
             .then((result)=>{
-                const token = result.data.data.token;
-                this.commit("setToken",token);
-                router.push(`/${route}`);
-            }).finally(()=>{
-                this.commit("setPassword","")
-            })
+                if(result.data?.data?.token){
+                    const token = result.data.data.token;
+                    this.commit("setToken",token);
+                    router.push(`/${route}`);
+                    this.commit("setLogin",{status: true, error: false, message: ""});
+                    this.commit("setPassword","");
+                } else {
+                    this.commit("setLogin",{status: false, error: true, message: "We are having some problems logging you in, please check your user name and password and try again."})
+                }
+            });
         },
         async logout(){
             await axios.get("http://localhost:3001/signout")
@@ -50,7 +67,8 @@ export default new Vuex.Store({
     },
     getters: {
         getEmail:(state)=>state.user.email,
-        getToken:(state)=>state.user.token
+        getToken:(state)=>state.user.token,
+        login:(state)=>state.login
     },
     modules: {
         user_test: {

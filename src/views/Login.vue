@@ -32,13 +32,14 @@
       <v-form
         ref="form"
         lazy-validation
-        @submit="()=>console.log('submitted')"
+        v-model="valid"
       >
       <v-text-field
           v-model="email"
           :rules="emailRules"
           label="E-mail"
           required
+          append-icon="mdi-at"
           type="email"
         ></v-text-field>
 
@@ -47,15 +48,18 @@
           :rules="pwdRules"
           label="Password"
           required
-          type="password"
+          :append-icon="value ? 'mdi-eye-off' : 'mdi-eye'"
+          @click:append="() => (value = !value)"
+          :type="value ? 'password' : 'text'"
         ></v-text-field>
       </v-form>
+      <v-alert class="login-error-msg" dismissible v-if="this.$store.getters.login.error" color="error" outlined>{{this.$store.getters.login.message}}</v-alert>
     </v-card-text>
     <v-card-actions class="d-flex">
-      <v-btn class="do-login-button mb-7" color="success" @click="$store.dispatch('signin', $route.query.redirect)">Login</v-btn>
+      <v-btn class="do-login-button mb-7" color="success" @click="validate()">Login</v-btn>
     </v-card-actions>
     <v-footer>
-        Having trouble logging in? <a href="/reset"> Click here to Reset your password </a>
+        Having trouble logging in? <a href="/reset"> Click here to reset your password </a>
     </v-footer>
   </v-card>
 
@@ -67,9 +71,13 @@
   //@ts-ignore
   import api from "@/api/server-api";
   export default {
-    name: "List",
+    name: "Login",
     data: () => ({
-      pwdRules: [],
+      valid: true,
+      value: true,
+      pwdRules: [
+        v => !!v || 'Password is required',
+      ],
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
@@ -77,6 +85,13 @@
     }),
     components: {},
     methods: {
+      validate() {
+        // @ts-ignore
+        this.valid = this.$refs.form.validate();
+        if (this.valid) {
+          this.$store.dispatch('signin', this.$route.query.redirect);
+        }
+      },
     },
     computed: {
       email: {
@@ -103,5 +118,8 @@
 <style lang="scss">
   .do-login-button {
     flex:1;
+  }
+  .login-error-msg{
+    font-size: 0.8rem !important;
   }
 </style>
