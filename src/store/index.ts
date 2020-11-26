@@ -28,7 +28,7 @@ export default new Vuex.Store({
         async signin(){
             await axios.post("http://localhost:3001/signin",{email:this.state.user.email, password:this.state.user.password })
             .then((result)=>{
-                const token = result.data.token;
+                const token = result.data.data.token;
                 this.commit("setToken",token);
             }).finally(()=>{
                 this.commit("setPassword","")
