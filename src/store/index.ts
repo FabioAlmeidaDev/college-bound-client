@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import axios from 'axios';
+import router from '@/router/index';
 
 Vue.use(Vuex);
 
@@ -25,11 +26,12 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        async signin(){
+        async signin(state, route = ""){
             await axios.post("http://localhost:3001/signin",{email:this.state.user.email, password:this.state.user.password })
             .then((result)=>{
                 const token = result.data.data.token;
                 this.commit("setToken",token);
+                router.push(`/${route}`);
             }).finally(()=>{
                 this.commit("setPassword","")
             })
@@ -39,6 +41,7 @@ export default new Vuex.Store({
             .then((result)=>{
                 const token = result.data.token;
                 this.commit("setToken",token);
+                router.push("/");
             }).finally(()=>{
                 this.commit("setPassword","")
             })

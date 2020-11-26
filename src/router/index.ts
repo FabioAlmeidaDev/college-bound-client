@@ -1,20 +1,37 @@
 import Vue from 'vue'
+import store from '../store';
 import VueRouter, { RouteConfig } from 'vue-router'
-import Athletes from "@/views/Athletes.vue";
-import AthleteDetails from "@/views/AthleteDetails.vue";
+import Home from "@/views/Home.vue";
+import Unauthorized from "@/views/Unauthorized.vue";
 import Login from "@/views/Login.vue";
-import Edit from "@/views/Edit.vue";
 import Register from "@/views/Register.vue";
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/signup',
+    path: '/',
+    name: 'Home',
+    component: Home,
+    meta: {
+      title: 'Home',
+    },
+  },
+  {
+    path: '/unauthorized',
+    name: 'Unauthorized',
+    component: Unauthorized,
+    meta: {
+      title: 'Unauthorized',
+    },
+  },
+  {
+    path: '/register',
     name: 'Register',
     component: Register,
     meta: {
-      title: 'Register'
+      title: 'Register',
+      guest: true
     },
   },
   {
@@ -22,32 +39,8 @@ const routes: Array<RouteConfig> = [
     name: 'Login',
     component: Login,
     meta: {
-      title: 'Login'
-    },
-  },
-  {
-    path: '/athletes',
-    name: 'Athletes',
-    component: Athletes,
-    meta: {
-      title: 'Athletes'
-    },
-  },
-  {
-    path: '/athletes/:athletename/:id',
-    name: 'AthleteDetails',
-    component: AthleteDetails,
-    meta: {
-      title: 'Athlete Details'
-    },
-  },
-  {
-    path: '/edit/:id',
-    name: 'Edit',
-    component: Edit,
-    props: true,
-    meta: {
-      title: 'Edit'
+      title: 'Login',
+      guest: true
     },
   },
   {
@@ -58,7 +51,8 @@ const routes: Array<RouteConfig> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
     meta: {
-      title: 'About'
+      title: 'About',
+      requireAuth: true
     },
   }
 ]
@@ -71,12 +65,37 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const athleteName = to.params.athletename;
-  if(athleteName){
+  if (athleteName) {
     document.title = `${to.meta.title} | ${athleteName}`;
-  }else{
+  } else {
     document.title = to.meta.title ? to.meta.title : "Apex Showcase 2020";
   }
   next();
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requireAuth)) {
+    if (store.getters.getToken) {
+      next();
+      return;
+    }
+    router.push({path: "login", query:{ redirect: `${to.name}`}});
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.guest)) {
+    if (store.getters.getToken) {
+      next("/");
+      return;
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
 
 export default router

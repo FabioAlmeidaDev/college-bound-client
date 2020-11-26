@@ -14,13 +14,21 @@
   </v-card>
 
 <!-- Not yet logged in -->
+  <v-card 
+    elevation="0"
+    class="mx-auto my-12"
+    max-width="374"
+  >
+    New User? <a href="/register"> Click here to Register </a>
+  </v-card>
+
   <v-card
     class="mx-auto my-12"
     max-width="374"
     v-if="!this.$store.state.user.token"
   >
-    <v-card-title>Login</v-card-title>
-    <v-card-text>
+    <v-card-title>Hello There!</v-card-title>
+    <v-card-text class="px-7">
       <v-form
         ref="form"
         lazy-validation
@@ -43,10 +51,14 @@
         ></v-text-field>
       </v-form>
     </v-card-text>
-    <v-card-actions>
-      <v-btn color="info" @click="$store.dispatch('signin')">Login</v-btn>
+    <v-card-actions class="d-flex">
+      <v-btn class="do-login-button mb-7" color="success" @click="$store.dispatch('signin', $route.query.redirect)">Login</v-btn>
     </v-card-actions>
+    <v-footer>
+        Having trouble logging in? <a href="/reset"> Click here to Reset your password </a>
+    </v-footer>
   </v-card>
+
 </div>
 </template>
 
@@ -65,19 +77,6 @@
     }),
     components: {},
     methods: {
-      async getList() {
-        await api
-          .get("/athletes/all", {})
-          .then((response) => {
-            this.athletes = response.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      },
-      goto(id) {
-        this.$router.push(`edit/${id}`);
-      },
     },
     computed: {
       email: {
@@ -100,3 +99,9 @@
     
   };
 </script>
+
+<style lang="scss">
+  .do-login-button {
+    flex:1;
+  }
+</style>

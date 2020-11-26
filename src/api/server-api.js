@@ -1,4 +1,18 @@
 import axios from "axios";
+import store from '../store';
+import router from '../router';
+
+
+axios.interceptors.response.use(undefined, function (error) {
+  if (error) {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        store.dispatch('LogOut')
+        return router.push('/login')
+    }
+  }
+})
 
 export default axios.create({
   // baseURL: "http://localhost:3001",
