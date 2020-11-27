@@ -5,6 +5,8 @@ import Home from "@/views/Home.vue";
 import Unauthorized from "@/views/Unauthorized.vue";
 import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
+import Reset from "@/views/Reset.vue";
+import ResetDo from "@/views/Reset.do.vue";
 
 Vue.use(VueRouter)
 
@@ -31,6 +33,24 @@ const routes: Array<RouteConfig> = [
     component: Register,
     meta: {
       title: 'Register',
+      guest: true
+    },
+  },
+  {
+    path: '/reset',
+    name: 'Reset',
+    component: Reset,
+    meta: {
+      title: 'Reset Password',
+      guest: true
+    },
+  },
+  {
+    path: '/reset.do',
+    name: 'Reset.do',
+    component: ResetDo,
+    meta: {
+      title: 'Reset Password',
       guest: true
     },
   },

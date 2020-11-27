@@ -1,18 +1,5 @@
 <template>
 <div>
-  <!-- Already logged in -->
-  <v-card
-      class="mx-auto my-12"
-      max-width="374"
-      v-if="this.$store.state.user.token"
-    >
-    <v-card-text>
-      <div>You are already logged in</div>
-      <div> {{this.$store.getters.getToken}} </div>
-      <v-btn @click="$store.dispatch('logout')"> Click here to log out </v-btn>
-    </v-card-text>
-  </v-card>
-
 <!-- Not yet logged in -->
   <v-card 
     elevation="0"
@@ -25,7 +12,6 @@
   <v-card
     class="mx-auto my-12"
     max-width="374"
-    v-if="!this.$store.state.user.token"
   >
     <v-card-title>Hello There!</v-card-title>
     <v-card-text class="px-7">

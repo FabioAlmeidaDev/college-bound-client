@@ -62,8 +62,19 @@ export default new Vuex.Store({
             }).finally(()=>{
                 this.commit("setPassword","")
             })
-        }
-
+        },
+        async reset(state){
+            return await axios.post("http://localhost:3001/forgot",{email:this.state.user.email, baseURL: window.location.host })
+            .then((result)=>{
+                return result;
+            });
+        },
+        async changePassword(state, t= ""){
+            return await axios.post("http://localhost:3001/changePassword",{email:this.state.user.email, password: this.state.user.password, token: t})
+            .then((result)=>{
+                return result;
+            });
+        },
     },
     getters: {
         getEmail:(state)=>state.user.email,
