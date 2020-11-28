@@ -58,7 +58,6 @@
   //@ts-ignore
   import Vue from "vue";
   import axios from "axios";
-  import api from "@/api/server-api";
 
   export default Vue.extend({
     name: "Reset",
@@ -82,7 +81,6 @@
           await this.$store.dispatch('reset')
           .then((res)=>{
             if (res.data.status == 'success'){
-              console.log("SUCCESS", res)
               this.foundEmail = true;
               this.success_message = `We have sent an email to ${this.email} with instructions on how to reset your password`;
             }else{
