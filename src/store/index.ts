@@ -20,6 +20,15 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setUserInfo(state: any, payload) {
+            delete payload["password"];
+            const keys= Object.keys(payload);
+            for (const key of keys) {
+                if (key in state.user){
+                    state.user[key] = payload[key];
+                }
+            }
+        },
         setEmail(state, payload) {
             state.user.email = payload;
         },
@@ -35,6 +44,10 @@ export default new Vuex.Store({
             state.login.message = message;
             state.login.error = error;
 
+        },
+        setUser(state: any, payload) {
+            delete payload["password"];
+            state.user = payload;
         }
     },
     actions: {
@@ -44,9 +57,11 @@ export default new Vuex.Store({
             .then((result)=>{
                 if(result.data?.data?.token){
                     const token = result.data.data.token;
+                    const user = result.data.data.user;
                     this.commit("setToken",token);
                     router.push(`/${route}`);
                     this.commit("setLogin",{status: true, error: false, message: ""});
+                    this.commit("setUser", {...user,token});
                     this.commit("setPassword","");
                 } else {
                     this.commit("setLogin",{status: false, error: true, message: "We are having some problems logging you in, please check your user name and password and try again."})
@@ -70,7 +85,23 @@ export default new Vuex.Store({
             });
         },
         async changePassword(state, t= ""){
-            return await axios.post("http://localhost:3001/changePassword",{email:this.state.user.email, password: this.state.user.password, token: t})
+            const user= {
+                email:this.state.user.email, password: this.state.user.password
+            };
+            return await axios.post("http://localhost:3001/update",{user, token: t})
+            .then((result)=>{
+                return result;
+            });
+        },
+        async updateUser(state, data){
+            const { token, user} = data;
+            return await axios.post("http://localhost:3001/update",{user, token})
+            .then((result)=>{
+                return result;
+            });
+        },
+        async register(state, user){
+            return await axios.post("http://localhost:3001/signup",user)
             .then((result)=>{
                 return result;
             });

@@ -10,29 +10,28 @@
         Let's get you registered.
       </v-card-title>
   
-      <v-form lazy-validation v-model="valid">
+      <v-form ref="form" lazy-validation v-model="valid">
         <v-card-text>
           <h4>Basic Info</h4>
-            <v-text-field label="Full name" v-model="fullName" :rules="[...validation.required]" required />
+            <v-text-field label="Full name" v-model="user.fullName" :rules="[...validation.required]" required />
             <v-row>
               <v-col md="8" sm="12" class="v-flex">
-                <v-text-field label="DOB"  v-mask="'##/##/####'" v-model="dob" :rules="[...validation.required]" required/>
+                <v-text-field label="DOB"  v-mask="'##/##/####'" v-model="user.dob" :rules="[...validation.required]" required/>
               </v-col>
               <v-col md="4" sm="12">
-                <v-select :items="graduatingYears" label="Grad year" required></v-select>
+                <v-select v-model="user.gradYear" :items="graduatingYears" label="Grad year" required></v-select>
               </v-col>
             </v-row>
-            <v-text-field label="Email" :rules="[...validation.required, ...validation.email]" />
+            <v-text-field v-model="user.email" label="Email" :rules="[...validation.required, ...validation.email]" />
           
           <h4>Parent or Guardian</h4>
-            <v-text-field label="Legal guardian's name" :rules="[...validation.required]"/>
-            <v-text-field label="Legal guardian's e-mail" :rules="[...validation.required, ...validation.email]"/>
+            <v-text-field v-model="user.guardianName" label="Legal guardian's name" :rules="[...validation.required]"/>
+            <v-text-field v-model="user.guardiaEmail" label="Legal guardian's e-mail" :rules="[...validation.required, ...validation.email]"/>
 
           <h4>Gym and coaches</h4>
             <v-autocomplete 
-              v-if="autocomplete" 
               label="Gym" 
-              v-model="gym" 
+              v-model="user.gym" 
               full-width  
               :items="gyms" 
               item-text="name" 
@@ -61,21 +60,21 @@
             </template>
           </v-autocomplete>
 
-            <v-text-field label="Head Coachs full name" :rules="[...validation.required]"/>
-            <v-text-field label="Head Coachs email" :rules="[...validation.required, ...validation.email]"/>
+            <v-text-field v-model="user.coachesName" label="Head Coachs full name" :rules="[...validation.required]"/>
+            <v-text-field v-model="user.coachEmail" label="Head Coachs email" :rules="[...validation.required, ...validation.email]"/>
 
           <h4>Social Media</h4>
-          <v-text-field label="Youtube channel" />
-          <v-text-field label="Instagram Account" />
+          <v-text-field v-model="user.youtubeChannel" label="Youtube channel" />
+          <v-text-field v-model="user.instagramAccount" label="Instagram Account" />
           
           <h4>Intent</h4>
-            <v-checkbox label="Accepted Verbal Offer" />
-            <v-checkbox label="Accepted Written Offer" />
+            <v-checkbox v-model="user.acceptedVerbalOffer" label="Accepted Verbal Offer" />
+            <v-checkbox v-model="user.acceptedWrittenOffer" label="Accepted Written Offer" />
 
           <h4>Password</h4>
             <v-text-field 
               label="Password" 
-              v-model="password" 
+              v-model="user.password" 
               :rules="[...validation.required, ...validation.passwordLength]"
               :type="revealPassword ? 'password' : 'text'"
             />
@@ -89,7 +88,7 @@
         </v-card-text>
         <v-footer>
           <v-card-actions >
-            <v-btn color="info" width="100%"> Register user </v-btn>
+            <v-btn color="info" width="100%" @click="validate()"> Register user </v-btn>
           </v-card-actions>
         </v-footer>
       </v-form>
@@ -120,22 +119,24 @@
         valid: true ,
         snackbar: false,
         snackbarMessage: "",
-        fullName:"",
-        dob:"",
-        email:"",
-        guardianName:"",
-        guardiaEmail:"",
-        gym:"",
-        coachesName:"",
-        coachEmail:"",
-        youtubeChannel:"",
-        instagramAccount:"",
-        acceptedVerbalOffer:"",
-        acceptedWriottenOffer:"",
-        password:"",
-        autocomplete: true,
+        user: {
+          fullName:"",
+          accountType:"athlete",
+          dob:"",
+          gradYear:2020,
+          email:"",
+          guardianName:"",
+          guardiaEmail:"",
+          gym:"",
+          coachesName:"",
+          coachEmail:"",
+          youtubeChannel:"",
+          instagramAccount:"",
+          acceptedVerbalOffer:false,
+          acceptedWrittenOffer:false,
+          password:"",
+        },
         search: null, 
-        addGym: [],
         gyms: [
           {name:'Port Jefferson Gymnastics', type: "from-server"}, 
           {name:'Apex Athletics'}, 
@@ -144,7 +145,7 @@
           required: [(v: any) => !!v || "Required"],
           email: [(v: any) => !!v || "E-mail is required", (v: any) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
           passwordLength: [(v: any) => v.length >= 8 || "Password must be at least 8 characters long"],
-          pwdMatchesRules: [(v: any) => v == this.$data.password || 'Password does not match'],
+          pwdMatchesRules: [(v: any) => v == this.$data.user.password || 'Password does not match'],
         }
       }
     },
@@ -152,9 +153,9 @@
       async validate() {
         // @ts-ignore
         this.valid = this.$refs.form.validate();
-        const token = this.$route.query.t;
+        
         if (this.valid) {
-          await this.$store.dispatch('register', token) 
+          await this.$store.dispatch('register', this.user) 
           .then((res)=>{
             if (res.data.status == 'success'){
               router.push("/login")

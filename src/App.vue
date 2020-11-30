@@ -1,29 +1,61 @@
 <template>
   <v-app>
-    <v-app-bar app color="rgb(120, 170, 1)" dark>
+    <v-app-bar app color="info" dark>
       <div class="d-flex align-center app-header">
         <div class="app-name-and-logo">
-          <v-img alt="Vuetify Logo" class="shrink mr-2" contain :src="require('@/assets/apexlogo.png')" transition="scale-transition" width="40" />
+          <v-img alt="Vuetify Logo" class="shrink mr-2" contain :src="require('@/assets/cblogo.png')" transition="scale-transition" width="40" />
           <h2 class="main-title">College Bound</h2>
         </div>
 
         <div class="app-action-button-group">
-          <v-btn outlined dark v-if="!$store.getters.getToken" @click="$router.push('/login')"> Login </v-btn>
-          <v-btn outlined dark v-if="$store.getters.getToken" @click="$store.dispatch('logout')"> Logout </v-btn>
+          <v-btn outlined dark v-if="!$store.getters.getToken" @click="$router.push('/login')">
+            <v-icon left dark>mdi-login</v-icon> Login           
+          </v-btn>
+          <v-btn outlined dark v-if="$store.getters.getToken" @click.stop="settingsDrawer = !settingsDrawer" class="ml-2"> 
+            <v-icon left dark>mdi-account</v-icon> Profile 
+          </v-btn>
         </div>
       </div>
-
       <v-spacer></v-spacer>
-
-      <!-- <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release </span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn> -->
     </v-app-bar>
+
+    <v-navigation-drawer
+      v-model="settingsDrawer"
+      absolute
+      right
+      temporary
+      
+    >
+      
+      <edit-list-item-avatar/>
+      
+      <v-list
+        nav
+        dense
+        v-if="this.$store.state.user.accountType == 'athlete'"
+      >
+        <v-list-item-group
+          v-model="group"
+          active-class="deep-purple--text text--accent-4"
+        >
+          <edit-list-item icon="mdi-view-grid-plus" label="Skills" route="edit/skills"/>
+          <edit-list-item icon="mdi-counter" label="Meet Scores" route="edit/scores"/>
+          <v-divider class="mt-5 mb-5"/>
+          <edit-list-item icon="mdi-account" label="Basic Info" route="edit/basic"/>
+          <edit-list-item icon="mdi-account" label="Contact" route="edit/contact"/>
+          <edit-list-item icon="mdi-account" label="Social Media" route="edit/social_media"/>
+          <edit-list-item icon="mdi-account" label="Gym | Club Info" route="edit/gym"/>
+          <v-divider class="mt-5 mb-5"/>
+          <v-list-item @click="$store.dispatch('logout')">
+              <v-list-item-icon>
+                  <v-icon>mdi-logout</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+
+    </v-navigation-drawer>
 
     <v-main>
       <router-view></router-view>
@@ -33,17 +65,27 @@
 
 <script lang="ts">
   import Vue from "vue";
-  import HelloWorld from "./components/HelloWorld.vue";
+  import EditListItem from "./components/Edit.ListItem.vue";
+  import EditListItemAvatar from "./components/Edit.Avatar.vue";
 
   export default Vue.extend({
     name: "App",
 
     components: {
+      EditListItem,
+      EditListItemAvatar
     },
 
     data: () => ({
+      settingsDrawer: false,
+      group: null
       //
     }),
+    watch: {
+      group () {
+        this.settingsDrawer = false
+      },
+    },
   });
 </script>
 <style lang="scss">

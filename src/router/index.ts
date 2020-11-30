@@ -7,6 +7,7 @@ import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import Reset from "@/views/Reset.vue";
 import ResetDo from "@/views/Reset.do.vue";
+import BasicInfo from "@/views/edit/BasicInfo.vue";
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,15 @@ const routes: Array<RouteConfig> = [
     component: Unauthorized,
     meta: {
       title: 'Unauthorized',
+    },
+  },
+  {
+    path: '/edit/basic',
+    name: 'Basic Info',
+    component: BasicInfo,
+    meta: {
+      title: 'Edit : Basic Info',
+      requireAuth: true
     },
   },
   {
