@@ -38,8 +38,11 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <edit-list-item icon="mdi-view-grid-plus" label="Skills" route="edit/skills"/>
+          <edit-list-item icon="mdi-view-grid-plus" label="Manage Skills List" route="manage_skills"/>
+          <v-divider class="mt-5 mb-5"/>
+          <edit-list-item icon="mdi-view-grid-plus" label="Skills" route="skills"/>
           <edit-list-item icon="mdi-counter" label="Meet Scores" route="edit/scores"/>
+          <edit-list-item icon="mdi-video" label="Video Gallery" route="videos"/>
           <v-divider class="mt-5 mb-5"/>
           <edit-list-item icon="mdi-account" label="Basic Info" route="edit/basic"/>
           <edit-list-item icon="mdi-account" label="Contact" route="edit/contact"/>

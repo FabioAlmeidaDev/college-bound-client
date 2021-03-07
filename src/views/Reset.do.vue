@@ -56,14 +56,7 @@
         <div>Dont have an account yet? <a href="/register"> Click here to register </a></div>
     </v-footer>
   </v-card>
-
-  <v-snackbar 
-    v-model="snackbar"
-    color="red"
-  >
-    {{this.snackbarMessage}}
-  </v-snackbar>
-
+  <snackbar :show="snackbar" :message="snackbarMessage" color="red"/>
   </v-container>
 </template>
 
@@ -72,10 +65,13 @@
   import Vue from "vue";
   import axios from "axios";
   import router from '@/router';
+  import Snackbar from "@/components/Snackbar.vue";
 
   export default Vue.extend({
     name: "Reset",
-
+    components: {
+      Snackbar
+    },
     data(){
       return {
         snackbar: false, 

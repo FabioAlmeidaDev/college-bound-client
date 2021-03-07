@@ -17,6 +17,36 @@ export default new Vuex.Store({
             error: false,
             status: false,
             message: ""
+        },
+        skillList: {
+            vault: [],
+            bars: [],
+            beam: [],
+            floor: [],
+            all: []
+        },
+        gymsList: [],
+        userSkills: {
+            vault: {
+                inRoutine: [],
+                canCompete: [],
+                workingOn: []
+            },
+            bars: {
+                inRoutine: [],
+                canCompete: [],
+                workingOn: []
+            },
+            beam: {
+                inRoutine: [],
+                canCompete: [],
+                workingOn: []
+            },
+            floor: {
+                inRoutine: [],
+                canCompete: [],
+                workingOn: []
+            },                                    
         }
     },
     mutations: {
@@ -48,7 +78,19 @@ export default new Vuex.Store({
         setUser(state: any, payload) {
             delete payload["password"];
             state.user = payload;
-        }
+        },
+        setSkillList(state: any, payload) {
+            state.skillList[payload.event] = payload.data.data;
+        },
+        setGymList(state: any, payload) {
+            state.gymsList = payload;
+        },
+        addToGymList(state: any, payload) {
+            state.gymsList.push(payload);
+        },
+        setUserSkills(state: any, payload) {
+            state.userSkills[payload.event] = payload.data;
+        },
     },
     actions: {
         async signin(state, route = ""){
@@ -106,11 +148,83 @@ export default new Vuex.Store({
                 return result;
             });
         },
+        async getSkills(state, event) {
+            return await axios.post("http://localhost:3001/skills",{event})
+            .then((result)=>{
+                this.commit("setSkillList", {event, data:result});
+                return result;
+            });           
+        },
+        async addSkill(state, data) {
+            return await axios.post("http://localhost:3001/skills/add", {...data})
+            .then((result) => {
+                this.commit("setSkillList", {event:"all", data:result});
+            })
+        },
+        async deleteSkill(state, id) {
+            return await axios.post("http://localhost:3001/skills/delete", id)
+            .then((result) => {
+                this.commit("setSkillList", {event:"all", data:result});
+            })
+        },
+        async saveEditedSkill(state, data) {
+            return await axios.post("http://localhost:3001/skills/edit", {...data})
+            .then((result) => {
+                this.commit("setSkillList", {event:"all", data:result});
+            })
+        },
+        async addGym(state, payload){
+            const p = {
+                token: this.getters.getToken,
+                name: payload.name,
+                addedFrom: payload.addedFrom
+            }
+            return await axios.post("http://localhost:3001/gym/add", p)
+            .then((result)=>{
+                return result;
+            });
+        },
+        async getGyms(state, event) {
+            return await axios.get("http://localhost:3001/gym/list")
+            .then((result)=>{
+                this.commit("setGymList", result.data);
+                return result.data;
+            });           
+        },
+        async getUserSkills(state, event) {
+            return await axios.post("http://localhost:3001/skills/user/list", {token: this.getters.getToken, event})
+            .then((result)=>{
+                this.commit("setUserSkills", {event: event, data: result.data});
+                return result.data;
+            });           
+        },
+        async addUserSkill(state, payload) {
+            return await axios.post("http://localhost:3001/skills/user/add", {token: this.getters.getToken, event: payload.event, mastery: payload.mastery, skillId: payload.skillId, skillName: payload.skillName})
+            .then((result)=>{
+                this.commit("setUserSkills", {event: payload.event, data: result.data});
+                this.dispatch("getSkills", payload.event);
+                return result.data;
+            });           
+        },
+        async deleteUserSkill(state, payload) {
+            return await axios.post("http://localhost:3001/skills/user/delete", {token: this.getters.getToken, event: payload.event, mastery: payload.mastery, skillId: payload.skillId, skillName: payload.skillName})
+            .then((result)=>{
+                this.commit("setUserSkills", {event: payload.event, data: result.data});
+                return result.data;
+            });           
+        },
     },
     getters: {
         getEmail:(state)=>state.user.email,
         getToken:(state)=>state.user.token,
-        login:(state)=>state.login
+        login:(state)=>state.login,
+        getSkillList: (state) => {
+            return (event: string) => {
+                return state.skillList[event];
+            }
+        },
+        gymsList: (state) => state.gymsList,
+        userSkills: (state) => state.userSkills
     },
     modules: {
         user_test: {

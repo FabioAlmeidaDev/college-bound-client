@@ -6,16 +6,16 @@
     elevation="0"
   >
 
-    <v-card-title>Update your basic info</v-card-title>
+    <v-card-title>Update your contact info</v-card-title>
     <v-card-text class="px-7">
       <v-form
         ref="form"
         lazy-validation
         v-model="valid"
       >
-        <v-text-field label="Full name" v-model="fullName" :rules="[...validation.required]" required />
-        <v-text-field label="DOB"  v-mask="'####/##/##'" :rules="[...validation.required]"  v-model="dob" required/>
-        <v-select :items="graduatingYears" label="Grad year"  :rules="[...validation.required]" v-model="gradYear" required></v-select>
+        <v-text-field label="Athlete's email" v-model="email" :rules="[...validation.required, ...validation.email]" required/>
+        <v-text-field label="Guardian's name" v-model="guardianName" :rules="[...validation.required]" required/>
+        <v-text-field label="Guardians's email" v-model="guardiaEmail" :rules="[...validation.required, ...validation.email]" required/>
 
       </v-form>
       <v-alert class="login-error-msg" dismissible v-if="this.$store.getters.login.error" color="error" outlined>{{this.$store.getters.login.message}}</v-alert>
@@ -25,8 +25,7 @@
         <v-btn class="do-login-button mb-4 mt-4" color="success" @click="validate()">Save Changes</v-btn>
     </v-footer>
   </v-card>
-
-  <snackbar :show.sync="snackbarshow" :message="snackbarMessage" :color="snackbarColor" @update-snackbar="(e)=>this.snackbarshow = e"/>
+  <snackbar :show="snackbar" :message="snackbarMessage" :color="snackbarColor"/>
   </v-container>
 </template>
 
@@ -37,7 +36,7 @@
   import router from '@/router';
   import validation from "@/lib/validation.rules";
   import Snackbar from "@/components/Snackbar.vue";
-
+  
   export default Vue.extend({
     name: "Reset",
     components: {
@@ -45,9 +44,9 @@
     },
     data(){
       return {
-        snackbarshow: false, 
+        snackbar: false, 
         snackbarMessage: "",
-        snackbarColor: "red",
+        snackbarColor: "",
         value: true,
         passwordMatch: "",
         valid: true,
@@ -60,17 +59,18 @@
         this.valid = this.$refs.form.validate();
         if (this.valid) {
           await this.$store.dispatch('updateUser', {
-            user:{fullName: this.fullName, dob: this.dob, gradYear: this.gradYear}, 
+            user:{email: this.email, guardianName: this.guardiaEmail, guardiaEmail: this.guardiaEmail}, 
             token: this.$store.getters.getToken
           }) 
           .then((res)=>{
             if (res.data.status == 'success'){
-              this.snackbarshow = true;
+              this.snackbar = true;
               this.snackbarColor = "green";
               this.snackbarMessage = `saved!`;
             }else{
-              this.snackbarshow = true;
-              this.snackbarMessage = `The token you are trying to use was not issue for the email ${this.$store.getters.getEmail}`;
+              this.snackbar = true;
+              this.snackbarColor = "red";
+              this.snackbarMessage = `not saved!`;
 
             }
         });  
@@ -78,39 +78,31 @@
       },      
     },
     computed: {
-      fullName: {
+      email: {
         set(val){
-          this.$store.commit("setUserInfo",{fullName: val});
+          this.$store.commit("setUserInfo",{email: val});
         },
         get(){
-          return this.$store.state.user.fullName;
+          return this.$store.state.user.email;
         }
       },
-      dob: {
+      guardianName: {
         set(val){
-          this.$store.commit("setUserInfo",{dob: val});
+          this.$store.commit("setUserInfo",{guardianName: val});
         },
         get(){
-          return this.$store.state.user.dob;
+          return this.$store.state.user.guardianName;
         }
       },
-      gradYear: {
+      guardiaEmail: {
         set(val){
-          this.$store.commit("setUserInfo",{gradYear: val});
+          this.$store.commit("setUserInfo",{guardiaEmail: val});
         },
         get(){
-          return this.$store.state.user.gradYear;
+          return this.$store.state.user.guardiaEmail;
         }
       },
-      graduatingYears() {
-        const years = [];
-        const num_of_years = 20;
-        const first_year = 2020;
-        for (let i = first_year; i <= first_year + num_of_years; i++) {
-          years.push(i);
-        }
-        return years;
-      },
+      
     },
   });
 </script>

@@ -45,12 +45,7 @@
     {{this.success_message}}
     <p><a href="/">Click here</a> to continue to the homepage</p>
   </v-alert>
-  <v-snackbar 
-    v-model="snackbar"
-    color="red"
-  >
-    {{this.snackbarMessage}}
-  </v-snackbar>
+  <snackbar :show="snackbar" :message="snackbarMessage" color="red"/>
   </v-container>
 </template>
 
@@ -58,10 +53,13 @@
   //@ts-ignore
   import Vue from "vue";
   import axios from "axios";
+  import Snackbar from "@/components/Snackbar.vue";
 
   export default Vue.extend({
     name: "Reset",
-
+    components: {
+      Snackbar
+    },
     data: () => ({
       foundEmail: false,
       success_message: "",

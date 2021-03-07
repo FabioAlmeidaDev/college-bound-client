@@ -2,12 +2,18 @@ import Vue from 'vue'
 import store from '../store';
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from "@/views/Home.vue";
+import Skills from "@/views/Skills.vue";
 import Unauthorized from "@/views/Unauthorized.vue";
 import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import Reset from "@/views/Reset.vue";
 import ResetDo from "@/views/Reset.do.vue";
 import BasicInfo from "@/views/edit/BasicInfo.vue";
+import ContactInfo from "@/views/edit/Contact.vue";
+import SocialMedia from "@/views/edit/SocialMedia.vue";
+import GymClub from "@/views/edit/ClubGym.vue";
+// Admin Components
+import ManageSkills from "@/views/admin/ManageSkills.vue";
 
 Vue.use(VueRouter)
 
@@ -30,10 +36,55 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/edit/basic',
-    name: 'Basic Info',
+    name: 'edit/basic',
     component: BasicInfo,
     meta: {
       title: 'Edit : Basic Info',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/edit/contact',
+    name: 'edit/contact',
+    component: ContactInfo,
+    meta: {
+      title: 'Edit : Basic Info',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/edit/social_media',
+    name: 'edit/social_media',
+    component: SocialMedia,
+    meta: {
+      title: 'Edit : Social Media',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/edit/gym',
+    name: 'edit/gym',
+    component: GymClub,
+    meta: {
+      title: 'Edit : Gym',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/skills',
+    name: 'skills',
+    component: Skills,
+    meta: {
+      title: 'Your Skills',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/manage_skills',
+    name: 'manage_skills',
+    component: ManageSkills,
+    meta: {
+      title: 'Manage Skills List',
       requireAuth: true
     },
   },

@@ -33,7 +33,7 @@
               label="Gym" 
               v-model="user.gym" 
               full-width  
-              :items="gyms" 
+              :items="this.$store.getters.gymsList" 
               item-text="name" 
               item-value="name" 
               no-data-text=""
@@ -80,7 +80,7 @@
             />
             <v-text-field
              label="Re enter your password"
-              :rules="[...validation.required, ...validation.pwdMatchesRules]"
+              :rules="[...validation.required, ...validation.pwdMatchesRules(this.user.password)]"
               :append-icon="revealPassword ? 'mdi-eye-off' : 'mdi-eye'"
               @click:append="() => (revealPassword = !revealPassword)"
               :type="revealPassword ? 'password' : 'text'"
@@ -93,13 +93,7 @@
         </v-footer>
       </v-form>
     </v-card>
-
-    <v-snackbar 
-      v-model="snackbar"
-      color="red"
-    >
-      {{this.snackbarMessage}}
-    </v-snackbar>
+    <snackbar :show="snackbar" :message="snackbarMessage" color="red"/>
   </v-container>
 </template>
 
@@ -109,10 +103,14 @@
   //@ts-ignore
   import api from "@/api/server-api";
   import router from '@/router';
+  import validation from "@/lib/validation.rules";
+  import Snackbar from "@/components/Snackbar.vue";
 
   export default Vue.extend({
     name: "Register",
-
+    components: {
+      Snackbar
+    },
     data(){
       return {
         revealPassword: true,
@@ -141,12 +139,7 @@
           {name:'Port Jefferson Gymnastics', type: "from-server"}, 
           {name:'Apex Athletics'}, 
         ],
-        validation: {
-          required: [(v: any) => !!v || "Required"],
-          email: [(v: any) => !!v || "E-mail is required", (v: any) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
-          passwordLength: [(v: any) => v.length >= 8 || "Password must be at least 8 characters long"],
-          pwdMatchesRules: [(v: any) => v == this.$data.user.password || 'Password does not match'],
-        }
+        validation: validation
       }
     },
     methods: {
@@ -155,6 +148,11 @@
         this.valid = this.$refs.form.validate();
         
         if (this.valid) {
+          this.$store.dispatch('addGym', {
+            name: this.user.gym,
+            addedFrom: "registrationPage"
+          });
+
           await this.$store.dispatch('register', this.user) 
           .then((res)=>{
             if (res.data.status == 'success'){
@@ -168,16 +166,16 @@
         }
       }, 
     },
-    watch: {
+   watch: {
       search(val: any){
-        this.gyms = this.gyms.filter(item => item.type !== "user-added")
-        const found = this.gyms.find(element => element.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        this.$store.commit("setGymList", this.$store.getters.gymsList.filter(item => item.type !== "user-added"));
+        const found = this.$store.getters.gymsList.find(element => element.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
         if (!found) {
           const newItem = {
             name: val,
             type: "user-added"
           }
-          this.gyms.push(newItem)
+          this.$store.commit("addToGymList", newItem)
         }
       }
     },
@@ -192,6 +190,9 @@
         return years;
       },
     },
+    mounted() {
+      this.$store.dispatch("getGyms");
+    }
   });
 </script>
 
