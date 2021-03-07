@@ -9,6 +9,7 @@
                     :event="this.event"
                     :my-skills="this.inRoutine"
                     mastery="inRoutine"
+                    header-color="green"
                 />
 
                 <todo-list
@@ -17,6 +18,8 @@
                     :event="this.event"
                     :my-skills="this.canCompete"
                     mastery="canCompete"
+                    header-color="indigo"
+
                 />
 
                 <todo-list
@@ -25,6 +28,7 @@
                     :event="this.event"
                     :my-skills="this.workingOn"
                     mastery="workingOn"
+                    header-color="pink"
                 />
             </v-row>
         </v-col>
@@ -121,37 +125,6 @@ export default {
 
 <style lang="scss">
 .skill-group {
-    .autocomplete-container {
-        display: flex;
-        align-items: center;
-    }
-    .skill-group-header {
-        font-weight: bold;
-        font-size: 1.2rem;
-        margin-top: 2rem;
-    }
-    .skill-col {
-        border-left: 1px dotted #666;
-    }
-    .skill-col-header{
-        font-weight: bold;
-    }
-    .skill-item {
-        padding: 0.5rem;
-        border: 1px solid #AAA;
-        border-radius: 0.25rem;
-        margin: 0.5rem;
-        display: flex;
 
-        .skill-name {
-            flex-grow: 1;
-        }
-
-        .skill-difficulty-value {
-            padding: 0 0.375rem;
-            border-right: 0.125rem solid #666;
-            margin-right: 0.375rem;
-        }
-    }
 }
 </style>

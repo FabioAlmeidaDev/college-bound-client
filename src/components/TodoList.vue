@@ -1,40 +1,47 @@
 <template>
-    <v-col> 
-        <div class="skill-col-header">{{this.title}}</div>
-        <div class="autocomplete-container">
-            <v-autocomplete 
-                label="Type your Skill" 
-                v-model="skill" 
-                full-width  
-                :items="skillList" 
-                item-text="name" 
-                item-value="_id" 
-                no-data-text=""
-                :search-input.sync="search"
-                hide-no-data
-                @keyup="checkForMatches"
-                >
-                    <template v-slot:item="data">
-                    <template v-if="typeof data.item !== 'object'">
-                    </template>
-                    <template v-else>
-                        <v-avatar size="30" :color="color(data.item.vp)" class="mr-3" small>
-                            <span class="white--text small">{{data.item.vp}}</span>
-                        </v-avatar>
-                        <v-list-item-content>
-                        <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                        <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
-                        </v-list-item-content>
-                    </template>
-                    </template>
-            </v-autocomplete>
-            <v-btn
-                outlined
-                @click="addSkillToMyProfile('inRoutine')"
-            >
-                Add
-            </v-btn>
-        </div>
+<v-col>
+    <v-card class="elevation-1 mx-2 skill-group pb-5">
+        <v-app-bar elevation="0" height="100" dark :color="this.headerColor">
+            <div>
+                <v-card-title class="pb-0">{{this.title}}</v-card-title>
+                <div class="autocomplete-container mt-2">
+                    <v-autocomplete 
+                        label="Type your Skill" 
+                        v-model="skill" 
+                        full-width  
+                        :items="skillList" 
+                        item-text="name" 
+                        item-value="_id" 
+                        no-data-text=""
+                        :search-input.sync="search"
+                        hide-no-data
+                        @keyup="checkForMatches"
+                        outlined
+                        dense
+                        >
+                            <template v-slot:item="data">
+                            <template v-if="typeof data.item !== 'object'">
+                            </template>
+                            <template v-else>
+                                <v-avatar size="30" :color="color(data.item.vp)" class="mr-3" small>
+                                    <span class="white--text small">{{data.item.vp}}</span>
+                                </v-avatar>
+                                <v-list-item-content>
+                                <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                                <v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
+                                </v-list-item-content>
+                            </template>
+                            </template>
+                    </v-autocomplete>
+                    <v-btn
+                        outlined
+                        @click="addSkillToMyProfile('inRoutine')"
+                    >
+                        Add
+                    </v-btn>
+                </div>
+            </div>
+        </v-app-bar>
         <v-alert type="info" text dense v-if="this.showNotInTheList"> This skill is not <b>yet</b> in our databases, but dont worry! Go ahead and click the ADD button and we'll take care of the rest </v-alert>
         <div class="skill-list">
             <div class="skill-item" v-for="(skill, index) in this.mySkills" :key="index"> 
@@ -45,7 +52,8 @@
                 <v-icon small color="red" @click="()=>deleteSkillFromMyProfile(skill._id)"> mdi-delete </v-icon>
             </div>
         </div>
-    </v-col>
+    </v-card>
+</v-col>
 </template>
 
 <script lang="ts">
@@ -93,6 +101,10 @@ export default {
         },
     },
     props: {
+        headerColor: {
+            type: String,
+            default: "grey"
+        },
         title: {
             type: String,
             default: "Required but empty",
@@ -121,9 +133,15 @@ export default {
 
 <style lang="scss">
 .skill-group {
+    .flex-direction-column {
+        flex-direction: column;
+    }
+    .skill-list {
+        padding:1rem;
+    }
     .autocomplete-container {
         display: flex;
-        align-items: center;
+        align-items: baseline;
     }
     .skill-group-header {
         font-weight: bold;
